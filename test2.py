@@ -14,7 +14,7 @@ import plotly.io as pio
 # --------------------------------------------------------------------------
 
 #데이터세트를 읽고 변수 df에 저장
-df = pd.read_excel('data.xlsx')
+df = pd.read_excel('data2.xlsx')
 
 # 총 매출을 계산하고 이에 대한 새 열을 추가합니다.
 df['Total Sales'] = df['Units Sold'] * df['Price per unit']
@@ -28,8 +28,8 @@ fig = px.bar(df, x='Product', y='Total Sales', title='Product Sales')
 fig.update_layout(
     plot_bgcolor='white',
     paper_bgcolor='lightgray',
-    width=800,
-    height=500,
+    width=500,
+    height=300,
     shapes=[dict(type='rect', xref='paper',
             yref='paper',
             x0=0,
@@ -68,8 +68,53 @@ with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
     worksheet = writer.sheets['Sales Data']
     worksheet.insert_image('H1', 'bar2_graph.png')
 
-print(f"Excel 파일이 생성되었습니다: {excel_path}")
+print(f"Excel 파일이 생성 되었습니다 : {excel_path}")
 
 # --------------------------------------------------------------------------
 
+# 필요한 패키지와 Excel 보고서 파일을 가져오겠습니다.
+from openpyxl import load_workbook
+from openpyxl.styles import Alignment, Border, Side, PatternFill
 
+# 기존 통합 문서를 로드하고 활성 워크시트를 선택합니다.
+wb = load_workbook('report2.xlsx') 
+ws = wb.active
+
+# 1. 정렬(Alignment):
+
+# 모든 열의 너비를 20으로 설정
+for col in ws.columns: 
+    ws.column_dimensions[col[0].column_letter].width = 20
+
+# 셀의 텍스트를 왼쪽 정렬로 설정합니다.
+for row in ws.iter_rows(min_row=1, max_row=6, min_col=1, max_col=ws.max_column): 
+     for cell in row: 
+         cell.alignment = Alignment(horizontal='left')
+
+# 수정된 통합 문서를 저장합니다.
+wb.save('report2.xlsx')
+
+print(f"Excel 파일이 수정 되었습니다 : {excel_path}")
+
+# --------------------------------------------------------------------------
+
+# 2. 테두리 추가(Adding borders):
+
+# 새 통합 문서를 만들고 활성 워크시트를 선택합니다.
+wb = load_workbook('report2.xlsx') 
+ws = wb.active
+
+# 특정 셀 범위 주위에 테두리를 설정합니다.
+range_border = Border(left=Side(style='dashDot'),     
+                       right=Side(style='dashed'), 
+                       top=Side(style='double'),  
+                       bottom=Side(style='hair'))
+
+for row in ws.iter_rows(min_row=1, max_row=6, min_col=1, max_col=ws.max_column): 
+       for cell in row: 
+         cell.border = range_border
+
+# 통합 문서를 새 파일에 저장
+wb.save('report2.xlsx')
+
+# --------------------------------------------------------------------------

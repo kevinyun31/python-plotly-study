@@ -1,3 +1,5 @@
+# https://plotly.com/blog/automate-excel-reports-with-python/
+
 #팬더 및 플롯 설치 - 아래 코드는 콘솔창에 입력한다
 # pip install pandas
 # pip install plotly
@@ -14,7 +16,7 @@ import plotly.io as pio
 # --------------------------------------------------------------------------
 
 #데이터세트를 읽고 변수 df에 저장
-df = pd.read_excel('data.xlsx')
+df = pd.read_excel('data1.xlsx')
 
 # 총 매출을 계산하고 이에 대한 새 열을 추가합니다.
 df['Total Sales'] = df['Units Sold'] * df['Price per unit']
@@ -65,7 +67,7 @@ worksheet = writer.sheets['Sales Data']
 worksheet.insert_image('H1', 'bar1_graph.png')
 
 # 마지막으로 파일을 저장합니다
-writer.save()
+writer._save()
 
 # --------------------------------------------------------------------------
 
@@ -76,14 +78,18 @@ writer.save()
 # 새로 생성된 보고서의 다양한 형식 지정 스타일을 보여주기 위해 openpyxl을 사용할 것입니다.
 
 # 필요한 패키지와 Excel 보고서 파일을 가져오겠습니다.
+# Excel 파일을 불러오는 데 사용
 from openpyxl import load_workbook
+# 여러 스타일 관련 모듈을 import
 from openpyxl.styles import Alignment, Border, Side, PatternFill
 
 # 기존 통합 문서를 로드하고 활성 워크시트를 선택합니다.
-wb = load_workbook('report.xlsx') 
+wb = load_workbook('report1.xlsx') 
 ws = wb.active
 
-# 1. 정렬:
+# --------------------------------------------------------------------------
+
+# 1. 정렬(Alignment):
 # 모든 열의 너비를 20으로 설정
 for col in ws.columns: 
     ws.column_dimensions[col[0].column_letter].width = 20
@@ -94,26 +100,28 @@ for row in ws.iter_rows(min_row=1, max_row=6, min_col=1, max_col=ws.max_column):
          cell.alignment = Alignment(horizontal='left')
 
 # 수정된 통합 문서를 저장합니다.
-wb.save('report.xlsx')
+wb.save('report1.xlsx')
 
 # --------------------------------------------------------------------------
 
-# # 새 통합 문서를 만들고 활성 워크시트를 선택합니다.
-# wb = load_workbook('report.xlsx') 
-# ws = wb.active
+# 2. 테두리 추가(Adding borders):
 
-# # 특정 셀 범위 주위에 테두리를 설정합니다.
-# rrange_border = Border(left=Side(style='medium'),     
-#                        right=Side(style='medium'), 
-#                        top=Side(style='medium'),  
-#                        bottom=Side(style='medium'))
+# 새 통합 문서를 만들고 활성 워크시트를 선택합니다.
+wb = load_workbook('report1.xlsx') 
+ws = wb.active
 
-# for row in ws.iter_rows(min_row=1, max_row=6, min_col=1, max_col=ws.max_column): 
-#        for cell in row: 
-#          cell.border = range_border
+# 특정 셀 범위 주위에 테두리를 설정합니다.
+range_border = Border(left=Side(style='medium'),     
+                       right=Side(style='medium'), 
+                       top=Side(style='medium'),  
+                       bottom=Side(style='medium'))
 
-# # 통합 문서를 새 파일에 저장
-# wb.save('report.xlsx')
+for row in ws.iter_rows(min_row=1, max_row=6, min_col=1, max_col=ws.max_column): 
+       for cell in row: 
+         cell.border = range_border
+
+# 통합 문서를 새 파일에 저장
+wb.save('report1.xlsx')
 
 # # --------------------------------------------------------------------------
 
